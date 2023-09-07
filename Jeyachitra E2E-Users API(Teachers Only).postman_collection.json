@@ -1,0 +1,506 @@
+{
+	"info": {
+		"_postman_id": "023aeebd-7fa0-4019-b44d-eacc9a85fc7a",
+		"name": "E2E-Users API(Teachers Only)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27210945",
+		"_collection_link": "https://bold-firefly-827772.postman.co/workspace/ASK-081523~4c6ce3fc-5c5f-4271-be13-660ff4ea0bbd/collection/27210945-023aeebd-7fa0-4019-b44d-eacc9a85fc7a?action=share&creator=27210945&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "create new student/sign-up",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"student01@gmail.com\",\n  \"name\":\"student01\",\n  \"password\": \"12345Abc\",\n  \"group\":\"ABC\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{stageUrl}}/sign-up",
+					"host": [
+						"{{stageUrl}}"
+					],
+					"path": [
+						"sign-up"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.environment.set(\"Users_studentId\", jsonData[0].id);",
+							"pm.environment.set(\"Users_activationCode\", jsonData[0].activationCode);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/users?_where=(email,eq,student01@gmail.com)",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users"
+					],
+					"query": [
+						{
+							"key": "_where",
+							"value": "(email,eq,student01@gmail.com)"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "activate user account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Message validation\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.message).to.eql(\"User was activated\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{stageUrl}}/activate/{{Users_studentId}}/{{Users_activationCode}}",
+					"host": [
+						"{{stageUrl}}"
+					],
+					"path": [
+						"activate",
+						"{{Users_studentId}}",
+						"{{Users_activationCode}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "sign-in(teacher)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"var jsonData=pm.response.json();",
+							"pm.environment.set(\"teacherToken\",jsonData.token);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"teacher@gmail.com\",\n  \"password\": \"12345Abc\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{stageUrl}}/sign-in",
+					"host": [
+						"{{stageUrl}}"
+					],
+					"path": [
+						"sign-in"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{teacherToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n  {\n    \"email\": \"student01@gmail.com\",\n    \"name\": \"student01\",\n    \"group\": \"ABC\",\n    \"role\": \"TEACHER\"\n  }\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{stageUrl}}/users",
+					"host": [
+						"{{stageUrl}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update student name",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{teacherToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"New Jon Snow\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{stageUrl}}/users/change-name/{{Users_studentId}}",
+					"host": [
+						"{{stageUrl}}"
+					],
+					"path": [
+						"users",
+						"change-name",
+						"{{Users_studentId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updated user data(change name)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/users?_where=(email,eq,student01@gmail.com)",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users"
+					],
+					"query": [
+						{
+							"key": "_where",
+							"value": "(email,eq,student01@gmail.com)"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update user group",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{teacherToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"group\": \"CBA\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{stageUrl}}/users/change-group/{{Users_studentId}}",
+					"host": [
+						"{{stageUrl}}"
+					],
+					"path": [
+						"users",
+						"change-group",
+						"{{Users_studentId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updated user's group",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/users?_where=(email,eq,student01@gmail.com)",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users"
+					],
+					"query": [
+						{
+							"key": "_where",
+							"value": "(email,eq,student01@gmail.com)"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update user's role",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{teacherToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"role\": \"STUDENT\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{stageUrl}}/users/change-role/{{Users_studentId}}",
+					"host": [
+						"{{stageUrl}}"
+					],
+					"path": [
+						"users",
+						"change-role",
+						"{{Users_studentId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Updated change-role",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/users?_where=(email,eq,student01@gmail.com)",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users"
+					],
+					"query": [
+						{
+							"key": "_where",
+							"value": "(email,eq,student01@gmail.com)"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "sign-in(teacher)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"var jsonData = pm.response.json();",
+							"pm.environment.set(\"teacherToken\", jsonData.token);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"teacher@gmail.com\",\n  \"password\": \"12345Abc\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{stageUrl}}/sign-in",
+					"host": [
+						"{{stageUrl}}"
+					],
+					"path": [
+						"sign-in"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete student",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{teacherToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{stageUrl}}/users/{{Users_studentId}}",
+					"host": [
+						"{{stageUrl}}"
+					],
+					"path": [
+						"users",
+						"{{Users_studentId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
