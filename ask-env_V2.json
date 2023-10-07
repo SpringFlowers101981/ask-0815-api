@@ -1,0 +1,111 @@
+{
+	"id": "02958a04-f05e-4841-87c6-e9fe4ca7d29d",
+	"name": "ask-env",
+	"values": [
+		{
+			"key": "stageUrl",
+			"value": " http://ask-stage.portnov.com/api/v1",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "studentId",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "activationCode",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "studentToken",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "teacherToken",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "Auth_studentId",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "Auth_activationCode",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "AuthorizationToken",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "Users_studentId",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "Users_activationCode",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "UsersToken",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "quizId",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "Fun_studentId",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "Fun_activationCode",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "Quizzes_Id",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "fun_teacherToken",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2023-10-07T00:42:42.238Z",
+	"_postman_exported_using": "Postman/10.17.5"
+}
